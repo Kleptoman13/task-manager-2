@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { connectPostgres } from './lib/db.postgres.js';
 
 dotenv.config();
 
@@ -15,4 +16,5 @@ app.use(cookieParser());
 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
+  connectPostgres();
 });
