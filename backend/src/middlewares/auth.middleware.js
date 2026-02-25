@@ -6,7 +6,7 @@ dotenv.config();
 
 export const protectRouter = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = req.cookies.jwt;
     if (!token)
       return res
         .status(401)
@@ -16,7 +16,7 @@ export const protectRouter = async (req, res, next) => {
     if (!decoded)
       return res.status(401).json({ message: 'Unauthorized - Invalid token' });
 
-    const user = UserModel.findById(decoded.userId);
+    const user = await UserModel.findById(decoded.userId);
 
     if (!user) return res.status(401).json({ message: 'User no found' });
 

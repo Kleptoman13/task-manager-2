@@ -32,7 +32,7 @@ export const register = async (req, res) => {
     const newUser = await UserModel.create(name, email, hashedPassword);
 
     if (newUser) {
-      // generateToken(newUser.id, res);
+      generateToken(newUser.id, res);
       res.status(201).json({
         id: newUser.id,
         name: newUser.name,

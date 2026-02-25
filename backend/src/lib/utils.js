@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const generateToken = async () => {
+export const generateToken = (userId, res) => {
   if (!process.env.JWT_ACCESS_SECRET) {
     throw new Error('JWT_SECRET is not configured');
   }

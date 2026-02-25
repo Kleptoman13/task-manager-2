@@ -44,7 +44,7 @@ const createTables = async () => {
             title VARCHAR(255) NOT NULL,
             description TEXT DEFAULT '',
             status VARCHAR(20) DEFAULT 'todo' CHECK (status IN ('todo', 'in-progress', 'done')),
-            priority VARCHAR(20) DEFAULT 'high' CHECK (status IN ('low', 'medium', 'high')),
+            priority VARCHAR(20) DEFAULT 'high' CHECK (priority IN ('low', 'medium', 'high')),
             deadline TIMESTAMP DEFAULT NULL,
             notified BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT NOW(),
