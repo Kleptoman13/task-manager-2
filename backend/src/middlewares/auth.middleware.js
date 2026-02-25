@@ -4,7 +4,7 @@ import { UserModel } from '../models/user.model.js';
 
 dotenv.config();
 
-export const protectRouter = async (req, res, next) => {
+export const protectRoute = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
     if (!token)

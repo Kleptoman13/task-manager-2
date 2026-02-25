@@ -2,7 +2,7 @@ import { pool } from '../lib/db.postgres.js';
 
 export const TaskModel = {
   async findAll(userId, filters = {}) {
-    const query = `SELECT * FROM tasks WHERE user_id = $1`;
+    let query = `SELECT * FROM tasks WHERE user_id = $1`;
     const values = [userId];
     let index = 2;
 
@@ -31,7 +31,14 @@ export const TaskModel = {
     return result.rows[0] || null;
   },
 
-  async create({ userId, title, description, status, priority, deadline }) {
+  async create({
+    userId,
+    title,
+    description = '',
+    status = 'todo',
+    priority = 'high',
+    deadline = null,
+  }) {
     const result = await pool.query(
       `INSERT INTO tasks (user_id, title, description, status, priority, deadline) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [userId, title, description, status, priority, deadline]
