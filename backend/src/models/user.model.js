@@ -22,39 +22,24 @@ export const UserModel = {
     const result = await pool.query(
       `INSERT INTO users (name, email, password)
       VALUES ($1, $2, $3)
-      RETURNING id, name, email, created_at`,
+      RETURNING id, name, email, avatar_url, created_at`,
       [name, email, password]
     );
 
     return result.rows[0];
   },
 
-  async updateProfile(id, fields) {
-    const allowed = ['name', 'avatar_url', 'password'];
-    const updates = [];
-    const values = [];
-    let index = 1;
-
-    for (const key of allowed) {
-      if (fields[key] !== undefined) {
-        updates.push(`${key} = $${index}`);
-        values.push(fields[key]);
-        index++;
-      }
-    }
-
-    if (updates.length === 0) return null;
-
-    updates.push(`updated_at = NOW()`);
-
-    values.push(id);
+  async updateAvatar(userid, avatarUrl) {
+    if (!avatarUrl) throw new Error('URL not found');
 
     const result = await pool.query(
       `UPDATE users
-       SET ${updates.join(', ')}
-       WHERE id = $${index}
+       SET 
+        avatar_url = $1,
+        updated_at = NOW()
+       WHERE id = $2
        RETURNING id, name, email, avatar_url, created_at`,
-      values
+      [avatarUrl, userid]
     );
 
     return result.rows[0] || null;
