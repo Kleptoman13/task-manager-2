@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchTasks } from '../store/slices/taskSlice';
-import { Plus, LayoutList, Loader2, Search, Filter } from 'lucide-react';
+import {
+  Plus,
+  LayoutList,
+  Loader2,
+  Search,
+  Filter,
+  ChevronDown,
+} from 'lucide-react';
 import TaskItem from '../components/TaskItem';
 import TaskModal from '../components/TaskModal';
 import type { Task } from '../types';
@@ -11,6 +18,12 @@ const HomePage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'done' | 'active'>(
+    'all'
+  );
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { tasks, isLoading } = useAppSelector((state) => state.tasks);
   const { authUser } = useAppSelector((state) => state.auth);
@@ -28,6 +41,23 @@ const HomePage: React.FC = () => {
     setSelectedTask(task);
     setIsModalOpen(true);
   };
+
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      const matchesSearch = task.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      const matchesFilter =
+        filterStatus === 'all'
+          ? true
+          : filterStatus === 'done'
+            ? task.status === 'done'
+            : task.status !== 'done';
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [tasks, searchQuery, filterStatus]);
 
   return (
     <div className="min-h-screen bg-gray-50/50 pb-20">
@@ -73,14 +103,63 @@ const HomePage: React.FC = () => {
             />
             <input
               type="text"
-              placeholder="Поиск задач..."
+              placeholder="Task search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
             />
           </div>
-          <button className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-200 rounded-2xl text-gray-600 font-medium hover:bg-gray-50 transition-colors">
-            <Filter size={18} />
-            <span>Filters</span>
-          </button>
+
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-200 rounded-2xl text-gray-600 font-medium hover:bg-gray-50 transition-all outline-none focus:ring-2 focus:ring-blue-500/20"
+            >
+              <Filter size={18} />
+              <span>
+                {filterStatus === 'all'
+                  ? 'All'
+                  : filterStatus === 'active'
+                    ? 'Active'
+                    : 'Done'}
+              </span>
+              <ChevronDown
+                size={16}
+                className={`transition-transform ${isFilterOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {isFilterOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setIsFilterOpen(false)}
+                />
+                <div className="absolute right-0 top-14 z-20 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl p-2 animate-in fade-in zoom-in-95 duration-200">
+                  {(['all', 'active', 'done'] as const).map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => {
+                        setFilterStatus(status);
+                        setIsFilterOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                        filterStatus === status
+                          ? 'bg-blue-50 text-blue-600'
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      {status === 'all'
+                        ? 'All'
+                        : status === 'active'
+                          ? 'Active'
+                          : 'Done'}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {/* TASKS LIST SECTION */}
@@ -90,9 +169,9 @@ const HomePage: React.FC = () => {
               <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
               <p className="text-gray-500 font-medium">Synchronization</p>
             </div>
-          ) : tasks.length > 0 ? (
+          ) : filteredTasks.length > 0 ? (
             <div className="grid gap-4">
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <TaskItem key={task.id} task={task} onEdit={handleOpenEdit} />
               ))}
             </div>
@@ -101,7 +180,7 @@ const HomePage: React.FC = () => {
               <div className="bg-gray-50 size-20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Plus className="text-gray-300" size={32} />
               </div>
-              <h3 className="text-lg font-bold text-gray-800">Список пуст</h3>
+              <h3 className="text-lg font-bold text-gray-800">List empty</h3>
               <p className="text-gray-400 max-w-[240px] mx-auto mt-2">
                 It's time to plan something big!
               </p>
