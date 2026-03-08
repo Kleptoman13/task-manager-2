@@ -56,6 +56,20 @@ export const signup = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  'auth/update-profile',
+  async (data: { avatar_url: string }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.put('/auth/update-profile', data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed in update profile'
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -109,6 +123,11 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => {
         state.isSigningUp = false;
         state.error = action.payload as string;
+      })
+
+      // Update Profile
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.authUser = action.payload;
       });
   },
 });

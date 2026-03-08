@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import Navbar from './components/Navbar';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -29,7 +30,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1">
+      {authUser && <Navbar />}
+      <main className={`flex-1 ${authUser ? 'pt-16' : ''}`}>
         <Routes>
           <Route
             path="/"
@@ -45,7 +47,7 @@ function App() {
           />
           <Route
             path="/profile"
-            element={!authUser ? <ProfilePage /> : <Navigate to={'/login'} />}
+            element={authUser ? <ProfilePage /> : <Navigate to={'/login'} />}
           />
 
           <Route path="*" element={<Navigate to={'/'} />} />

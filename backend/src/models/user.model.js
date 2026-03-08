@@ -11,7 +11,7 @@ export const UserModel = {
 
   async findById(id) {
     const result = await pool.query(
-      `SELECT id, name, email, created_at FROM users WHERE id = $1`,
+      `SELECT id, name, email, avatar_url, created_at FROM users WHERE id = $1`,
       [id]
     );
 

@@ -58,9 +58,12 @@ export const deleteTask = createAsyncThunk(
 
 export const updateTask = createAsyncThunk(
   '/tasks/update',
-  async (id: string, { rejectWithValue }) => {
+  async (
+    { id, data }: { id: string; data: Partial<Task> },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await axiosInstance.put(`/tasks/${id}`);
+      const res = await axiosInstance.put(`/tasks/${id}`, data);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -95,7 +98,7 @@ const taskSlice = createSlice({
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         const index = state.tasks.findIndex(
-          (task) => task.id === action.payload
+          (task) => task.id === action.payload.id
         );
         if (index !== -1) {
           state.tasks[index] = action.payload;
