@@ -30,6 +30,8 @@ const ProfilePage = () => {
     };
   };
 
+  console.log('Данные пользователя:', authUser);
+
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
       <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">

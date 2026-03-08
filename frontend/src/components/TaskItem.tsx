@@ -3,6 +3,7 @@ import type { Task } from '../types';
 import { useAppDispatch } from '../store';
 import { deleteTask, updateTask } from '../store/slices/taskSlice';
 import { CheckCircle2, Circle, Clock, Edit3, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface TaskItemProps {
   task: Task;
@@ -12,14 +13,15 @@ interface TaskItemProps {
 const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit }) => {
   const dispatch = useAppDispatch();
 
-  const handleStatusToggle = () => {
+  const handleStatusToggle = async () => {
     const newStatus = task.status === 'done' ? 'todo' : 'done';
-    dispatch(updateTask({ id: task.id, data: { status: newStatus } }));
+    await dispatch(updateTask({ id: task.id, data: { status: newStatus } }));
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm('Delete Task?')) {
-      dispatch(deleteTask(task.id));
+      await dispatch(deleteTask(task.id));
+      toast.success('Task deleted successfully!');
     }
   };
 

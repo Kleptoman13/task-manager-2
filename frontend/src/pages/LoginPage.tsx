@@ -1,8 +1,9 @@
 import { Loader2, Lock, Mail } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { login } from '../store/slices/authSlice';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -14,9 +15,10 @@ export default function LoginPage() {
 
   const { isLoggingIn, error } = useAppSelector((state) => state.auth);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login(formData));
+    await dispatch(login(formData));
+    toast.success('Welcome back!');
   };
 
   return (

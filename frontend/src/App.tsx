@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from './store';
 import { checkAuth } from './store/slices/authSlice';
 import { Loader } from 'lucide-react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/HomePage';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
@@ -30,6 +31,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Toaster position="bottom-right" />
       {authUser && <Navbar />}
       <main className={`flex-1 ${authUser ? 'pt-16' : ''}`}>
         <Routes>

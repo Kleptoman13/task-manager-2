@@ -3,6 +3,7 @@ import type { Task } from '../types';
 import { useAppDispatch } from '../store';
 import { createTask, updateTask } from '../store/slices/taskSlice';
 import { AlertCircle, Calendar, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -36,8 +37,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
     if (taskToEdit) {
       await dispatch(updateTask({ id: taskToEdit.id, data: dataToSend }));
+      toast.success('Task edited successfully');
     } else {
       await dispatch(createTask(dataToSend));
+      toast.success('Task created successfully');
     }
     onClose();
   };

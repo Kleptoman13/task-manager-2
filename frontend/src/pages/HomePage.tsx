@@ -12,6 +12,7 @@ import {
 import TaskItem from '../components/TaskItem';
 import TaskModal from '../components/TaskModal';
 import type { Task } from '../types';
+import TaskSkeleton from '../components/TaskSkeleton';
 
 const HomePage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -165,9 +166,10 @@ const HomePage: React.FC = () => {
         {/* TASKS LIST SECTION */}
         <div className="space-y-4">
           {isLoading && tasks.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
-              <p className="text-gray-500 font-medium">Synchronization</p>
+            <div className="grid gap-4">
+              {[1, 2, 3].map((i) => (
+                <TaskSkeleton key={i} />
+              ))}
             </div>
           ) : filteredTasks.length > 0 ? (
             <div className="grid gap-4">
