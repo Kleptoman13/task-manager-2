@@ -37,7 +37,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
     if (taskToEdit) {
       await dispatch(updateTask({ id: taskToEdit.id, data: dataToSend }));
-      toast.success('Task edited successfully');
+      toast.success('Task changed successfully');
     } else {
       await dispatch(createTask(dataToSend));
       toast.success('Task created successfully');
