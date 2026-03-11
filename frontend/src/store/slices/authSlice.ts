@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { User } from '../../types';
+import type { User, AuthResponse } from '../../types';
 import { axiosInstance } from '../../lib/axios';
 
 interface AuthState {
@@ -34,7 +34,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (data: any, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post<User>('/auth/login', data);
+      const res = await axiosInstance.post<AuthResponse>('/auth/login', data);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed');
@@ -46,7 +46,10 @@ export const signup = createAsyncThunk(
   'auth/register',
   async (data: any, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post<User>('/auth/register', data);
+      const res = await axiosInstance.post<AuthResponse>(
+        '/auth/register',
+        data
+      );
       return res.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -76,6 +79,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.authUser = null;
+      localStorage.removeItem('token');
       axiosInstance.post('/auth/logout');
     },
     clearError: (state) => {
@@ -103,7 +107,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.authUser = action.payload;
+        const { token, ...user } = action.payload;
+        state.authUser = user;
+        localStorage.setItem('token', token);
         state.isLoggingIn = false;
       })
       .addCase(login.rejected, (state, action) => {
@@ -117,7 +123,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signup.fulfilled, (state, action) => {
-        state.authUser = action.payload;
+        const { token, ...user } = action.payload;
+        state.authUser = user;
+        localStorage.setItem('token', token);
         state.isSigningUp = false;
       })
       .addCase(signup.rejected, (state, action) => {

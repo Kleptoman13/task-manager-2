@@ -32,12 +32,13 @@ export const register = async (req, res) => {
     const newUser = await UserModel.create(name, email, hashedPassword);
 
     if (newUser) {
-      generateToken(newUser.id, res);
+      const token = generateToken(newUser.id);
       res.status(201).json({
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
         avatar_url: newUser.avatar_url,
+        token,
       });
 
       // try {
@@ -73,13 +74,14 @@ export const login = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(404).json({ message: 'Invalid credentails' });
 
-    generateToken(user.id, res);
+    const token = generateToken(user.id);
 
     res.status(200).json({
       id: user.id,
       name: user.name,
       email: user.email,
       avatar_url: user.avatar_url,
+      token,
     });
   } catch (error) {
     console.error('Error in login controller: ', error);
@@ -88,7 +90,6 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (_, res) => {
-  res.cookie('jwt', '', { maxAge: 0 });
   res.status(200).json({ message: 'Logged out successfully' });
 };
 

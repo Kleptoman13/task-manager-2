@@ -8,6 +8,10 @@ export interface User {
   updated_at: string;
 }
 
+export interface AuthResponse extends User {
+  token: string;
+}
+
 export interface Task {
   id: string;
   user_id: string;

@@ -1,14 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchTasks } from '../store/slices/taskSlice';
-import {
-  Plus,
-  LayoutList,
-  Loader2,
-  Search,
-  Filter,
-  ChevronDown,
-} from 'lucide-react';
+import { Plus, LayoutList, Search, Filter, ChevronDown } from 'lucide-react';
 import TaskItem from '../components/TaskItem';
 import TaskModal from '../components/TaskModal';
 import type { Task } from '../types';
@@ -26,7 +19,7 @@ const HomePage: React.FC = () => {
   );
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const { tasks, isLoading } = useAppSelector((state) => state.tasks);
+  const { tasks = [], isLoading } = useAppSelector((state) => state.tasks);
   const { authUser } = useAppSelector((state) => state.auth);
 
   useEffect(() => {

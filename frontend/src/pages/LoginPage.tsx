@@ -1,5 +1,5 @@
 import { Loader2, Lock, Mail } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { login } from '../store/slices/authSlice';
 import { Link } from 'react-router-dom';
